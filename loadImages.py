@@ -3,8 +3,8 @@ from supabase import create_client, Client
 from supabase.lib.client_options import ClientOptions
 
 # Initialize the Supabase client
-url = "https://xrbfefmwiymnnpujtcbg.supabase.co"
-key = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhyYmZlZm13aXltbm5wdWp0Y2JnIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTY3NTk5MDM1OSwiZXhwIjoxOTkxNTY2MzU5fQ.OfjHIGQLNhkad_w6g2h4IjoK3t_xbKqa6KGKEBwjmOQ"
+url = [URL]
+key = [API_KEY]
 options = ClientOptions(
     schema="public",
     headers={"Content-Type": "application/json"}

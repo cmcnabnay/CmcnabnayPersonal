@@ -6,7 +6,7 @@ from sklearn.cluster import KMeans
 import googlemaps
 
 # Replace with your Google Maps API key
-GOOGLE_MAPS_API_KEY = "AIzaSyDUZVelPmEmOGYeOWRaiy4dVCt-gLnEgWY"
+GOOGLE_MAPS_API_KEY = #[KEY]
 
 FINAL_DESTINATION = "St Mary Catholic Central Monroe, MI"
 SPECIAL_ADDRESS_1 = "11251 Harold Drive Luna Pier MI 48157"

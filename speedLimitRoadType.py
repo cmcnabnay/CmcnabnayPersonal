@@ -13,7 +13,7 @@ bounding_box_1 = (42.570376, -86.372750, 43.265014, -85.287797)
 bounding_box_2 = (41.743673, -83.807512, 42.313228, -83.18)
 
 # Google Maps Geocoding API key
-google_api_key = "AIzaSyDUZVelPmEmOGYeOWRaiy4dVCt-gLnEgWY"
+google_api_key = #[KEY]
 
 # Directional and suffix dictionaries for normalization
 directional_dict = {

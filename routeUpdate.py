@@ -5,7 +5,7 @@ from datetime import datetime, timedelta
 import os
 import re
 
-API_KEY = "AIzaSyDUZVelPmEmOGYeOWRaiy4dVCt-gLnEgWY"
+API_KEY = #[KEY]
 
 def parse_google_maps_url(url):
     parsed_url = urlparse(url)

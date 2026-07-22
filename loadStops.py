@@ -8,9 +8,9 @@ import pandas as pd
 from geopy.geocoders import GoogleV3
 
 # Supabase credentials
-SUPABASE_URL = "https://xrbfefmwiymnnpujtcbg.supabase.co"
-SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhyYmZlZm13aXltbm5wdWp0Y2JnIiwicm9sZSI6ImFub24iLCJpYXQiOjE2NzU5OTAzNTksImV4cCI6MTk5MTU2NjM1OX0.E1HZXgTpL9bb38Oc3CAwBOLXtGSK1t9ZbgtRcWnqRUs"
-supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
+SUPABASE_URL = #[URL]
+SUPABASE_KEY = #[KEY]
+supabase: Clientsupabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 # Google API Key
 api_key = "AIzaSyDUZVelPmEmOGYeOWRaiy4dVCt-gLnEgWY"
