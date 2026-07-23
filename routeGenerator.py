@@ -9,11 +9,11 @@ import googlemaps
 GOOGLE_MAPS_API_KEY = #[KEY]
 
 FINAL_DESTINATION = "St Mary Catholic Central Monroe, MI"
-SPECIAL_ADDRESS_1 = "11251 Harold Drive Luna Pier MI 48157"
-SPECIAL_ADDRESS_2 = "12276 Laginess Rd LaSalle, MI 48145"
-REPLACEMENT_ADDRESS_1 = "2621 Deborah Dr Monroe, MI 48162"
-REPLACEMENT_ADDRESS_2 = "14495 S. Telegraph Rd. Monroe MI 48133"
-SPECIAL_ADDRESS = "9956 Strasburg Rd. Erie MI 48133"
+SPECIAL_ADDRESS_1 = 
+SPECIAL_ADDRESS_2 = 
+REPLACEMENT_ADDRESS_1 = 
+REPLACEMENT_ADDRESS_2 = 
+SPECIAL_ADDRESS = 
 
 def geocode_address(address):
     base_url = 'https://maps.googleapis.com/maps/api/geocode/json'
@@ -64,159 +64,7 @@ def read_addresses(file_path):
             if "*DIFFERENT ADDRESS FOR DROP OFF BELOW*" in address:
                 address = REPLACEMENT_ADDRESS_1
             elif address.strip() == SPECIAL_ADDRESS:
-                address = REPLACEMENT_ADDRESS_2
-            elif " and " in address:
-                split_addresses = address.split(" and ")
-                for addr in split_addresses:
-                    addressesAM[addr] = addressesAM.get(addr, 0) + 1
-                continue
-            addressesAM[address] = addressesAM.get(address, 0) + 1
-
-        elif "PM Only" or "PM only" in ridership:
-            if "5518 Wimbledon Park" in address:
-                address = REPLACEMENT_ADDRESS_1
-            elif address.strip() == SPECIAL_ADDRESS:
-                address = REPLACEMENT_ADDRESS_2
-            elif " and " in address:
-                split_addresses = address.split(" and ")
-                for addr in split_addresses:
-                    addressesPM[addr] = addressesPM.get(addr, 0) + 1
-                continue
-            addressesPM[address] = addressesPM.get(address, 0) + 1
-
-    # Ensure REPLACEMENT_ADDRESS_1 is included in addressesPM for "PM Only" ridership
-    #addressesPM[REPLACEMENT_ADDRESS_1] = addressesPM.get(REPLACEMENT_ADDRESS_1, 0)
-
-    return addressesAM, addressesPM
-
-
-def geocode_addresses(addresses):
-    coords = {}
-    for address in addresses:
-        location = geocode_address(address)
-        if location:
-            coords[address] = location
-        else:
-            print(f"Failed to geocode address '{address}' using Google Maps API.")
-    return coords
-
-def cluster_addresses(coords, addresses, num_clusters):
-    max_passengers_per_route = 9
-    coords_list = list(coords.values())
-    if not coords_list:
-        return [[]]
-
-    kmeans = KMeans(n_clusters=num_clusters, random_state=0)
-    labels = kmeans.fit_predict(coords_list)
-
-    groups = [[] for _ in range(num_clusters)]
-    passenger_count = [0] * num_clusters
-    for i, label in enumerate(labels):
-        address = list(coords.keys())[i]
-        num_passengers = addresses[address]
-        if passenger_count[label] + num_passengers <= max_passengers_per_route or passenger_count[label] == 0:
-            groups[label].append(address)
-            passenger_count[label] += num_passengers
-        else:
-            for j in range(num_clusters):
-                if passenger_count[j] + num_passengers <= max_passengers_per_route:
-                    groups[j].append(address)
-                    passenger_count[j] += num_passengers
-                    break
-            else:
-                groups[label].append(address)
-                passenger_count[label] += num_passengers
-
-    return groups
-
-def calculate_travel_duration(origin, destination, gmaps):
-    try:
-        directions_result = gmaps.directions(origin, destination, mode="driving", departure_time="now")
-        if directions_result:
-            route = directions_result[0]
-            return route['legs'][0]['duration']['value']  # Duration in seconds
-        else:
-            print(f"Failed to get directions from {origin} to {destination}")
-            return float('inf')  # Return a very large number indicating failure
-    except Exception as e:
-        print(f"Exception occurred while calculating duration from {origin} to {destination}")
-        print(e)
-        return float('inf') 
-
-def optimize_route_order_am(addresses, gmaps):
-    if not addresses:
-        return []
-
-    addresses.append(FINAL_DESTINATION)
-    
-    start = max(addresses[:-1], key=lambda addr: calculate_travel_duration(addr, FINAL_DESTINATION, gmaps))
-    unvisited = set(addresses) - {start, FINAL_DESTINATION}
-    route = [start]
-
-    while unvisited:
-        last = route[-1]
-        nearest = min(unvisited, key=lambda addr: calculate_travel_duration(last, addr, gmaps))
-        route.append(nearest)
-        unvisited.remove(nearest)
-
-    route.append(FINAL_DESTINATION)
-    return route
-
-def optimize_route_order_pm(addresses, gmaps):
-    if not addresses:
-        return []
-
-    addresses.insert(0, FINAL_DESTINATION)
-    
-    unvisited = set(addresses) - {FINAL_DESTINATION}
-    route = [FINAL_DESTINATION]
-
-    while unvisited:
-        last = route[-1]
-        nearest = min(unvisited, key=lambda addr: calculate_travel_duration(last, addr, gmaps))
-        route.append(nearest)
-        unvisited.remove(nearest)
-
-    return route
-
-def create_google_maps_url(address_group):
-    base_url = "https://www.google.com/maps/dir/"
-    addresses_str = '/'.join(address.replace(' ', '+') for address in address_group)
-    url = f"{base_url}{addresses_str}"
-    return url
-
-def main():
-    file_path = os.path.join(os.getcwd(), 'Transportation Rosters', 'Transportation 2024-25 (Responses).xlsx')
-    
-    addresses_am, addresses_pm = read_addresses(file_path)
-    print(f"addresses AM: {addresses_am}")
-    print(f"addresses PM: {addresses_pm}")
-
-    coords_am = geocode_addresses(addresses_am)
-    coords_pm = geocode_addresses(addresses_pm)
-    
-    address_groups_am = cluster_addresses(coords_am, addresses_am, num_clusters=4)
-    address_groups_pm = cluster_addresses(coords_pm, addresses_pm, num_clusters=5)
-    
-    gmaps = googlemaps.Client(key=GOOGLE_MAPS_API_KEY)
-
-    def process_groups(groups, gmaps, am_pm):
-        optimized_routes = []
-        variations = []
-
-        for group in groups:
-            if am_pm == "AM":
-                if SPECIAL_ADDRESS_1 in group and SPECIAL_ADDRESS_2 in group:
-                    group1 = [addr for addr in group if addr != SPECIAL_ADDRESS_2]
-                    group2 = [addr for addr in group if addr != SPECIAL_ADDRESS_1]
-                    variations.append((group1, group2))
-                    optimized_routes.append(optimize_route_order_am(group1, gmaps))
-                    optimized_routes.append(optimize_route_order_am(group2, gmaps))
-                else:
-                    optimized_routes.append(optimize_route_order_am(group, gmaps))
-
-                if REPLACEMENT_ADDRESS_1 in group:
-                    group1 = [addr for addr in group if addr != REPLACEMENT_ADDRESS_1]
+in group if addr != REPLACEMENT_ADDRESS_1]
                     variations.append((group1, group))
                     optimized_routes.append(optimize_route_order_am(group1, gmaps))
                     optimized_routes.append(optimize_route_order_am(group, gmaps))

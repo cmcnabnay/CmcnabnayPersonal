@@ -46,9 +46,9 @@ def normalize_street_name(street_name):
 # Function to read addresses from multiple Excel files
 def read_addresses_from_excels(files):
     addresses = []
-    replacement_address_1 = "2621 Deborah Dr Monroe, MI 48162"
-    replacement_address_2 = "14495 S. Telegraph Rd. Monroe MI 48133"
-    special_address = "9956 Strasburg Rd. Erie MI 48133"
+    replacement_address_1 = 
+    replacement_address_2 = 
+    special_address = 
     
     for file in files:
         df = pd.read_excel(file)
@@ -168,16 +168,16 @@ def match_street_data(street_name, osm_data, lat, lng):
     print(f"best match: {best_match}")
     
     normalized_best_match = None
-    if best_match == "Alberta Drive":
-        normalized_best_match = "baretta"
-    elif best_match == "Aten Road":
-        normalized_best_match = "alt rd"
-    elif best_match == "Pine Ridge Road":
-        normalized_best_match = "south point ridge"
-    elif best_match == "Applewood Drive Northeast":
-        normalized_best_match = "applewood dr"
-    elif best_match == "Ranger Drive":
-        normalized_best_match = "tanager"
+    if best_match == :
+        normalized_best_match = 
+    elif best_match == :
+        normalized_best_match = 
+    elif best_match == :
+        normalized_best_match = 
+    elif best_match == :
+        normalized_best_match = 
+    elif best_match == :
+        normalized_best_match = 
     else:
         normalized_best_match = normalize_street_name(best_match)
 
@@ -213,7 +213,7 @@ def match_street_data(street_name, osm_data, lat, lng):
                                 result = (maxspeed, road_type, osm_street_name, min_diff)
 
                         if min_diff > .05:
-                            if normalized_osm_street_name == "marion dr":
+                            if normalized_osm_street_name == :
                                 maxspeed  = "Unknown"
                                 road_type = "residential"
                                 osm_street_name = "Special Case"

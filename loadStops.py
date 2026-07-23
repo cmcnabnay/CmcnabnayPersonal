@@ -13,7 +13,7 @@ SUPABASE_KEY = #[KEY]
 supabase: Clientsupabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 # Google API Key
-api_key = "AIzaSyDUZVelPmEmOGYeOWRaiy4dVCt-gLnEgWY"
+api_key = #KEY
 
 # Function to get Google Plus Code
 def get_plus_code(latitude, longitude):
