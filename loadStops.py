@@ -26,7 +26,7 @@ def get_plus_code(latitude, longitude):
     else:
         return "Plus Code not found for the given coordinates"
     
-test_plus_code = get_plus_code(42.8939674, -85.4898443)
+test_plus_code = get_plus_code(#test_latitude, test_longitude)
 print(test_plus_code)
 
 # Function to get geocode data
@@ -127,46 +127,6 @@ all_addresses_ws = all_addresses_wb.active
 all_addresses_dict = {}
 for row in all_addresses_ws.iter_rows(min_row=2, values_only=True):
     address, _, maxspeed, road_type, *_ = row  # Unpack only relevant columns
-    all_addresses_dict[address] = {
-        "Maxspeed": maxspeed,
-        "Road Type": road_type
-    }
-
-# Fetch existing addresses from the stops table
-existing_stops_response = supabase.table('stops').select('address').execute()
-existing_addresses = {record['address'] for record in existing_stops_response.data}
-print(f"existing address: {existing_addresses}")
-
-# Fetch all IDs greater than 50
-existing_ids_response = supabase.table('stops').select('id').gt('id', 50).execute()
-existing_ids = {record['id'] for record in existing_ids_response.data}
-
-# Function to find the next available ID above 50
-def get_next_id(existing_ids, start_id=51):
-    current_id = start_id
-    while current_id in existing_ids:
-        current_id += 1
-    return current_id
-
-new_addresses = []
-
-# Process Stops.xlsx and insert data into Supabase
-for row in stops_ws.iter_rows(min_row=2, values_only=True):
-    address, name, plus_code, location, *_ = row  # Ignore columns E and F
-    print(plus_code)
-
-    # Check if the address already exists in the stops table
-    if address in existing_addresses:
-        continue
-    else:
-        print(f"new address: {address}")
-
-    # Process the name for intersections
-    name = process_name(address, name)
-
-    # Format the address if it's an intersection
-    formatted_address = format_intersection(address)
-    print(address)
 
     # Extract coordinates from the detailed Plus Code
     try:
